@@ -100,129 +100,25 @@ def deslocamentoNodal(nn, N, nm, Inc, F, R):
 
 # ===================================== REAÇÕES DE APOIO ==========================================
 
-def reacoesDeApoio(nc, F, nr, R, U, Kg):
-    P = np.matmul(Kg,U)
+def reacoesDeApoio(F, nr, R, U, Kg):
+    F = np.matmul(Kg,U)
 
+    reacoes = np.zeros(nr)
     for e in range(nr):
-        R[e]
+        reacoes[e] = F[int(R[e])]        
 
-'''
-def getAngulo(no1, no2, N):
-    import math
+    return reacoes
 
-    no1x = N[0][no1 - 1]
-    no1y = N[1][no1 - 1]
-
-    no2x = N[0][no2 - 1]
-    no2y = N[1][no2 - 1]
-
-    # calcular o coef. ang. do elemento
-    m = 0
-    if no2x - no1x != 0: m = (no2y - no1y)/(no2x - no1x)
-
-    # coeficiente angular do elemento
-    ang = math.atan(m)
-
-    return ang
-
-def calculaForçaPerpendicular(no1, no2, N, F):
-    import math 
-
-    ang = getAngulo(no1,no2,N)
-
-    no1F = F[(no1-1)*2]*math.cos(ang) + F[(no1*2)-1]*math.sin(ang)
-    no2F = F[(no2-1)*2]*math.cos(ang) + F[(no2*2)-1]*math.sin(ang)
-
-    forca = abs(no1F - no2F)
-
-    return forca
-
-def tensaoNoElemento(Inc, F, N):
-    tensoes = []
-    for e in range(len(Inc)):
-        no1 = int(Inc[e][0])
-        no2 = int(Inc[e][1])    
-        
-        P = calculaForçaPerpendicular(no1, no2, N, F)
-        A = Inc[e][3]
-        tensao = P/A
-        tensoes.append(tensao)
-
-    return tensoes
-    
-def deformacaoLongitudinal(Inc, F, N):
-    deformacoes = []
-    for e in range(len(Inc)):
-        nos = Inc[e][0:2]    
-        
-        no1 = int(nos[0])
-        no2 = int(nos[1])
-
-        no1x = N[0][no1 - 1]
-        no1y = N[1][no1 - 1]
-
-        no2x = N[0][no2 - 1]
-        no2y = N[1][no2 - 1]
-
-        l = ((no2x - no1x)**2 + (no2y - no1y)**2)**(1/2)
-        P = calculaForçaPerpendicular(no1, no2, N, F)
-        A = Inc[e][3]
-        E = Inc[e][2]
-
-        deformacao = (P * l)/(A * E)
-        deformacoes.append(deformacao)
-
-        print('Elem.' + str(e), 'nós', Inc[e][0:2], 'Deformação =', deformacao)
-
-    return deformacoes
+# ===================================== DEFORMAÇÕES ==========================================
 
 
-
-def getSinCos(N, nos, l):
-    no1 = int(nos[x mi0])
-    no2 = int(nos[1])
-
-    no1x = N[0][no1 - 1]
-    no1y = N[1][no1 - 1]
-
-    no2x = N[0][no2 - 1]
-    no2y = N[1][no2 - 1]
-
-    s = (no2y - no1y)/l
-    c = (no2x - no1x)/l
-
-    return s,c
-
-def tensao(nm, Inc, U):
-    tensao = np.zeros(nm)
-    Ut = np.zeros(4)
-    for elemento in range(nm):
-        nos = Inc[elemento][0:2]
-        
-        l = getComprimento(N, nos)
-        E = Inc[elemento][2]
-        k = E/l
-
-        s,c = getSinCos(N, nos, l)
-
-        mat = np.array([-c, -s, c, s])
-
-        cont = 0
-        for e in nos:
-            e = (int(e)-1)*2
-            Ut[cont] = U[e]
-            Ut[cont+1] = U[e+1]
-
-        ts = k*mat*Ut
-
-        print(ts)
 '''
 #Ti = tensaoNoElemento(Inc, F, N)
 #deformacaoLongitudinal(Inc,F,N)
 
 U, Kg = deslocamentoNodal(nn, N, nm, Inc, F, R)
-reacoesDeApoio(nc, F, nr, R, U, Kg)
+P = reacoesDeApoio(F, nr, R, U, Kg)
 #tensao(nm, Inc, U)
 
 
-#ft.geraSaida('saída',1,U,1,1,1)
+ft.geraSaida('saída',P,U,1,1,1)
