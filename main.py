@@ -11,7 +11,7 @@ import numpy as np
 # F = vetor carregamento
 # nr = numero de restricoes
 # R = vetor com os graus de liberdade restritos
-[nn,N,nm,Inc,nc,F,nr,R] = ft.importa('src/entrada.xlsx')
+[nn,N,nm,Inc,nc,F,nr,R] = ft.importa('src/input/avaliacao.xlsx')
 ft.plota(N,Inc)
 
 # ===================================== DESLOCAMENTO NODAL ==========================================
