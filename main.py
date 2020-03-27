@@ -11,7 +11,7 @@ import numpy as np
 # F = vetor carregamento
 # nr = numero de restricoes
 # R = vetor com os graus de liberdade restritos
-[nn,N,nm,Inc,nc,F,nr,R] = ft.importa('src/input/avaliacao.xlsx')
+[nn,N,nm,Inc,nc,F,nr,R] = ft.importa('src/input/entrada.xlsx')
 ft.plota(N,Inc)
 
 # ===================================== DESLOCAMENTO NODAL ==========================================
@@ -143,11 +143,6 @@ def deformacoes(nn, N, nm, Inc, U):
 
     return deformacoes
 
-# ===================================== FORÇAS INTERNAS ==========================================
-
-def forcasInternas():
-    return
-
 # ===================================== TENSÕES INTERNAS ==========================================
 
 def tensoes(nn, N, nm, Inc, U):
@@ -183,11 +178,25 @@ def tensoes(nn, N, nm, Inc, U):
 
     return tensoes
 
+# ===================================== FORÇAS INTERNAS ==========================================
+
+def forcasInternas(nm, Inc, Ti):
+    Finternas = np.zeros(nm)
+    
+    for elemento in range(nm):
+        tensao = Ti[elemento]
+        area = Inc[elemento][3]
+        Finterna = tensao/area
+        Finternas[elemento] = Finterna
+    
+    return Finternas
+
 # =================================================================================
 
 U, Kg = deslocamentoNodal(nn, N, nm, Inc, F, R)
 Ft = reacoesDeApoio(F, nr, R, U, Kg)
 Epsi = deformacoes(nn, N, nm, Inc, U)
 Ti = tensoes(nn, N, nm, Inc, U)
+Fi = forcasInternas(nm, Inc, Ti)
 
-ft.geraSaida('saída', Ft, U, Epsi, 1, Ti)
+ft.geraSaida('saída', Ft, U, Epsi, Fi, Ti)
