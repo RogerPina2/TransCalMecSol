@@ -107,7 +107,6 @@ def reacoesDeApoio(nc, F, nr, R):
         if forca%2 == 0: somaFx += F[forca]
         else: somaFy += F[forca]
     
-    
     reacoesX = []
     reacoesY = []
     for restricao in range(nr):
@@ -117,10 +116,8 @@ def reacoesDeApoio(nc, F, nr, R):
 
     
     if len(reacoesX) == 1:
+        rx = reacoesX[0]
         
-
-    somaFz = 0
-
 
 '''
 def getAngulo(no1, no2, N):
