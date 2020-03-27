@@ -1,0 +1,15 @@
+Reacoes de apoio [N]
+1
+
+Deslocamentos [m]
+[ 0.00000000e+00 -9.52380952e-07  0.00000000e+00  0.00000000e+00
+  1.60714286e-06 -4.01785714e-06]
+
+Deformacoes []
+1
+
+Forcas internas [N]
+1
+
+Tensoes internas [Pa]
+1
