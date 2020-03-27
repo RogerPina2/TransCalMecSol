@@ -10,10 +10,10 @@ Deslocamentos [m]
  [-4.01785714e-06]]
 
 Deformacoes []
-1
+[ 2.38095238e-06  5.35714286e-06 -2.97619048e-06]
 
 Forcas internas [N]
 1
 
 Tensoes internas [Pa]
-1
+[ 500000. 1125000. -625000.]
