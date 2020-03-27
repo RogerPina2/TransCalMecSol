@@ -111,14 +111,83 @@ def reacoesDeApoio(F, nr, R, U, Kg):
 
 # ===================================== DEFORMAÇÕES ==========================================
 
+def deformacoes(nn, N, nm, Inc, U):
 
-'''
-#Ti = tensaoNoElemento(Inc, F, N)
-#deformacaoLongitudinal(Inc,F,N)
+    deformacoes = np.zeros(nm)
+
+    for elemento in range(nm):
+        nos = Inc[elemento][0:2]
+
+        no1 = int(nos[0])
+        no2 = int(nos[1])
+
+        no1x = N[0][no1 - 1]
+        no1y = N[1][no1 - 1]
+
+        no2x = N[0][no2 - 1]
+        no2y = N[1][no2 - 1]
+
+        l = ((no2x - no1x)**2 + (no2y - no1y)**2)**(1/2)
+
+        #seno e cosseno
+        s = (no2y - no1y)/l
+        c = (no2x - no1x)/l
+
+        u = np.array([U[(no1-1)*2], U[(no1-1)*2+1], U[(no2-1)*2], U[(no2-1)*2 + 1]])
+        
+        matSinCos = np.array([-c, -s, c, s])
+        
+        deformacao = 1/l * np.matmul(matSinCos,u)
+
+        deformacoes[elemento] = deformacao
+
+    return deformacoes
+
+# ===================================== FORÇAS INTERNAS ==========================================
+
+def forcasInternas():
+    return
+
+# ===================================== TENSÕES INTERNAS ==========================================
+
+def tensoes(nn, N, nm, Inc, U):
+    
+    tensoes = np.zeros(nm)
+
+    for elemento in range(nm):
+        nos = Inc[elemento][0:2]
+
+        no1 = int(nos[0])
+        no2 = int(nos[1])
+
+        no1x = N[0][no1 - 1]
+        no1y = N[1][no1 - 1]
+
+        no2x = N[0][no2 - 1]
+        no2y = N[1][no2 - 1]
+
+        E = Inc[elemento][2]
+        l = ((no2x - no1x)**2 + (no2y - no1y)**2)**(1/2)
+
+        #seno e cosseno
+        s = (no2y - no1y)/l
+        c = (no2x - no1x)/l
+
+        u = np.array([U[(no1-1)*2], U[(no1-1)*2+1], U[(no2-1)*2], U[(no2-1)*2 + 1]])
+        
+        matSinCos = np.array([-c, -s, c, s])
+        
+        tensao = E/l * np.matmul(matSinCos,u)
+
+        tensoes[elemento] = tensao
+
+    return tensoes
+
+# =================================================================================
 
 U, Kg = deslocamentoNodal(nn, N, nm, Inc, F, R)
-P = reacoesDeApoio(F, nr, R, U, Kg)
-#tensao(nm, Inc, U)
+Ft = reacoesDeApoio(F, nr, R, U, Kg)
+Epsi = deformacoes(nn, N, nm, Inc, U)
+Ti = tensoes(nn, N, nm, Inc, U)
 
-
-ft.geraSaida('saída',P,U,1,1,1)
+ft.geraSaida('saída', Ft, U, Epsi, 1, Ti)
