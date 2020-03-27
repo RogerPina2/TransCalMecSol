@@ -15,7 +15,6 @@ import numpy as np
 ft.plota(N,Inc)
 
 # ===================================== DESLOCAMENTO NODAL ==========================================
-
 def deslocamentoNodal(nn, N, nm, Inc, F, R):
     """
         nn = numero de nós
@@ -77,6 +76,7 @@ def deslocamentoNodal(nn, N, nm, Inc, F, R):
             for j in range(4):
                 Kg[idx[i]][idx[j]] += K[e][i][j]
     
+    KgSalvo = np.array(Kg)
 
     # Utiliza Kg pro metodo iterativo
     P = np.array(F)
@@ -88,7 +88,7 @@ def deslocamentoNodal(nn, N, nm, Inc, F, R):
 
     U = metodoInterativo(10000, 10e-16, Kg, P)
 
-    Ufinal = np.zeros(nn*2)
+    Ufinal = np.zeros((nn*2,1))
 
     cont = 0
     for e in range(len(Ufinal)):
@@ -96,28 +96,15 @@ def deslocamentoNodal(nn, N, nm, Inc, F, R):
             Ufinal[e] = U[cont]
             cont +=1
 
-    return Ufinal
+    return Ufinal, KgSalvo
 
 # ===================================== REAÇÕES DE APOIO ==========================================
 
-def reacoesDeApoio(nc, F, nr, R):
-    somaFx = 0
-    somaFy = 0
-    for forca in range(nc):
-        if forca%2 == 0: somaFx += F[forca]
-        else: somaFy += F[forca]
-    
-    reacoesX = []
-    reacoesY = []
-    for restricao in range(nr):
-        rest = int(R[restricao])
-        if rest%2 == 0: reacoesX.append('rx' + str(rest))
-        else: reacoesY.append('ry' + str(rest))
+def reacoesDeApoio(nc, F, nr, R, U, Kg):
+    P = np.matmul(Kg,U)
 
-    
-    if len(reacoesX) == 1:
-        rx = reacoesX[0]
-        
+    for e in range(nr):
+        R[e]
 
 '''
 def getAngulo(no1, no2, N):
@@ -233,8 +220,8 @@ def tensao(nm, Inc, U):
 #Ti = tensaoNoElemento(Inc, F, N)
 #deformacaoLongitudinal(Inc,F,N)
 
-#U = deslocamentoNodal(nn, N, nm, Inc, F, R)
-reacoesDeApoio(nc, F, nr, R)
+U, Kg = deslocamentoNodal(nn, N, nm, Inc, F, R)
+reacoesDeApoio(nc, F, nr, R, U, Kg)
 #tensao(nm, Inc, U)
 
 
