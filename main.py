@@ -11,7 +11,7 @@ import numpy as np
 # F = vetor carregamento
 # nr = numero de restricoes
 # R = vetor com os graus de liberdade restritos
-[nn,N,nm,Inc,nc,F,nr,R] = ft.importa('src/input/entrada.xlsx')
+[nn,N,nm,Inc,nc,F,nr,R] = ft.importa('src/input/avaliacao.xlsx')
 ft.plota(N,Inc)
 
 # ===================================== DESLOCAMENTO NODAL ==========================================
@@ -145,35 +145,13 @@ def deformacoes(nn, N, nm, Inc, U):
 
 # ===================================== TENSÕES INTERNAS ==========================================
 
-def tensoes(nn, N, nm, Inc, U):
+def tensoes(nm, Inc, Epsi):
     
     tensoes = np.zeros(nm)
 
     for elemento in range(nm):
-        nos = Inc[elemento][0:2]
-
-        no1 = int(nos[0])
-        no2 = int(nos[1])
-
-        no1x = N[0][no1 - 1]
-        no1y = N[1][no1 - 1]
-
-        no2x = N[0][no2 - 1]
-        no2y = N[1][no2 - 1]
-
-        E = Inc[elemento][2]
-        l = ((no2x - no1x)**2 + (no2y - no1y)**2)**(1/2)
-
-        #seno e cosseno
-        s = (no2y - no1y)/l
-        c = (no2x - no1x)/l
-
-        u = np.array([U[(no1-1)*2], U[(no1-1)*2+1], U[(no2-1)*2], U[(no2-1)*2 + 1]])
-        
-        matSinCos = np.array([-c, -s, c, s])
-        
-        tensao = E/l * np.matmul(matSinCos,u)
-
+        E = Inc[elemento][2]        
+        tensao = E * Epsi[elemento]
         tensoes[elemento] = tensao
 
     return tensoes
@@ -186,7 +164,7 @@ def forcasInternas(nm, Inc, Ti):
     for elemento in range(nm):
         tensao = Ti[elemento]
         area = Inc[elemento][3]
-        Finterna = tensao/area
+        Finterna = tensao*area
         Finternas[elemento] = Finterna
     
     return Finternas
@@ -196,7 +174,7 @@ def forcasInternas(nm, Inc, Ti):
 U, Kg = deslocamentoNodal(nn, N, nm, Inc, F, R)
 Ft = reacoesDeApoio(F, nr, R, U, Kg)
 Epsi = deformacoes(nn, N, nm, Inc, U)
-Ti = tensoes(nn, N, nm, Inc, U)
+Ti = tensoes(nn, N, nm, Inc, U, Epsi)
 Fi = forcasInternas(nm, Inc, Ti)
 
-ft.geraSaida('saída', Ft, U, Epsi, Fi, Ti)
+ft.geraSaida('saídaAv', Ft, U, Epsi, Fi, Ti)
