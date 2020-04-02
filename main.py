@@ -103,7 +103,7 @@ def deslocamentoNodal(nn, N, nm, Inc, F, R):
 def reacoesDeApoio(F, nr, R, U, Kg):
     F = np.matmul(Kg,U)
 
-    reacoes = np.zeros(nr)
+    reacoes = np.zeros((nr,1))
     for e in range(nr):
         reacoes[e] = F[int(R[e])]        
 
@@ -113,7 +113,7 @@ def reacoesDeApoio(F, nr, R, U, Kg):
 
 def deformacoes(nn, N, nm, Inc, U):
 
-    deformacoes = np.zeros(nm)
+    deformacoes = np.zeros((nm,1))
 
     for elemento in range(nm):
         nos = Inc[elemento][0:2]
@@ -147,7 +147,7 @@ def deformacoes(nn, N, nm, Inc, U):
 
 def tensoes(nm, Inc, Epsi):
     
-    tensoes = np.zeros(nm)
+    tensoes = np.zeros((nm,1))
 
     for elemento in range(nm):
         E = Inc[elemento][2]        
@@ -159,7 +159,7 @@ def tensoes(nm, Inc, Epsi):
 # ===================================== FORÇAS INTERNAS ==========================================
 
 def forcasInternas(nm, Inc, Ti):
-    Finternas = np.zeros(nm)
+    Finternas = np.zeros((nm,1))
     
     for elemento in range(nm):
         tensao = Ti[elemento]
@@ -174,7 +174,7 @@ def forcasInternas(nm, Inc, Ti):
 U, Kg = deslocamentoNodal(nn, N, nm, Inc, F, R)
 Ft = reacoesDeApoio(F, nr, R, U, Kg)
 Epsi = deformacoes(nn, N, nm, Inc, U)
-Ti = tensoes(nn, N, nm, Inc, U, Epsi)
+Ti = tensoes(nm, Inc, Epsi)
 Fi = forcasInternas(nm, Inc, Ti)
 
 ft.geraSaida('saídaAv', Ft, U, Epsi, Fi, Ti)
