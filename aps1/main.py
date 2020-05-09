@@ -11,7 +11,11 @@ import numpy as np
 # F = vetor carregamento
 # nr = numero de restricoes
 # R = vetor com os graus de liberdade restritos
+<<<<<<< HEAD:aps1/main.py
 [nn,N,nm,Inc,nc,F,nr,R] = ft.importa('src/input/entrada.xlsx')
+=======
+[nn,N,nm,Inc,nc,F,nr,R] = ft.importa('src/input/aula10-6.xlsx')
+>>>>>>> master:main.py
 ft.plota(N,Inc)
 
 # ===================================== DESLOCAMENTO NODAL ==========================================
@@ -183,4 +187,8 @@ Epsi = deformacoes(nn, N, nm, Inc, U)
 Ti = tensoes(nm, Inc, Epsi)
 Fi = forcasInternas(nm, Inc, Ti)
 
+<<<<<<< HEAD:aps1/main.py
 ft.geraSaida('saída', Ft, U, Epsi, Fi, Ti)
+=======
+ft.geraSaida('saída-Aula10-6', Ft, U, Epsi, Fi, Ti)
+>>>>>>> master:main.py
