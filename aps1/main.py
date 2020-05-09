@@ -11,7 +11,7 @@ import numpy as np
 # F = vetor carregamento
 # nr = numero de restricoes
 # R = vetor com os graus de liberdade restritos
-[nn,N,nm,Inc,nc,F,nr,R] = ft.importa('src/input/avaliacao.xlsx')
+[nn,N,nm,Inc,nc,F,nr,R] = ft.importa('src/input/entrada.xlsx')
 ft.plota(N,Inc)
 
 # ===================================== DESLOCAMENTO NODAL ==========================================
@@ -26,7 +26,7 @@ def deslocamentoNodal(nn, N, nm, Inc, F, R):
     """
 
     K = []
-    # cria uma matriz de rigidez pra cada elemento e alva em K
+    # cria uma matriz de rigidez pra cada elemento e salva em K
     for elemento in range(nm):
         nos = Inc[elemento][0:2]
 
@@ -86,7 +86,7 @@ def deslocamentoNodal(nn, N, nm, Inc, F, R):
         Kg = np.delete(Kg,int(R[-1-e]), 1)
         P  = np.delete(P, int(R[-1-e]), 0)
 
-    U = metodoInterativo(10000, 10e-16, Kg, P)
+    U = metodoInterativo(10000, 10e-16, Kg, P, 1)
 
     Ufinal = np.zeros((nn*2,1))
 
@@ -146,6 +146,12 @@ def deformacoes(nn, N, nm, Inc, U):
 # ===================================== TENSÕES INTERNAS ==========================================
 
 def tensoes(nm, Inc, Epsi):
+    """
+        Calcula as tensões dos elementos.
+        nm = numero de elementos
+        Inc = matriz de Incidência
+        Epsi = deformação de cada elemento
+    """
     
     tensoes = np.zeros((nm,1))
 
@@ -177,4 +183,4 @@ Epsi = deformacoes(nn, N, nm, Inc, U)
 Ti = tensoes(nm, Inc, Epsi)
 Fi = forcasInternas(nm, Inc, Ti)
 
-ft.geraSaida('saídaAv', Ft, U, Epsi, Fi, Ti)
+ft.geraSaida('saída', Ft, U, Epsi, Fi, Ti)

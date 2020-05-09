@@ -1,7 +1,7 @@
 
 import numpy as np
 
-def metodoInterativo(ite, tol, K, F):
+def metodoInterativo(ite, tol, K, F, num):
     #Saídas: U, Erro associado
 
     U = []
@@ -20,7 +20,10 @@ def metodoInterativo(ite, tol, K, F):
                 if c >= len(Uold):          
                     c -= len(Uold)          
 
-                Unew[e] -= (K[e][c] * Unew[c])
+                if num == 0:
+                    Unew[e] -= (K[e][c] * Uold[c])
+                else:
+                    Unew[e] -= (K[e][c] * Unew[c])
 
             Unew[e] /= K[e][e]
 
@@ -42,13 +45,6 @@ def metodoInterativo(ite, tol, K, F):
     return Unew
 
 '''
-k = np.array([[1.59, -0.4, -0.54], [-0.4, 1.7, 0.4], [-0.54, 0.4, 0.54]])
-print(k)
-K = 10e8 * k
-F = np.array([0, 150, -100])
-
-print(metodoInterativo(10000, 10e-16, K, F))
-
 k = np.array([[1.0,-1.0], [-1.0,1.0]])
 K = ((0.02*200e9)/2) * k
 F = np.array([50000.0, 0])
