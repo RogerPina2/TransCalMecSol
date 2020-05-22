@@ -12,7 +12,7 @@ deltaY = deltaX # espaçamento nodal em metro em Y
 nnY = int(L/deltaY) + 1 # número de nós na direção Y, + 1 pois as duas pontas da barra são nó 
 
 tTotal = 10 # tempo total de análise em segundos
-deltaT = 10e-2 # intervalo de tempo entre cada análise em segundos
+deltaT = 1e-2 # intervalo de tempo entre cada análise em segundos
 ni = int(tTotal/deltaT) + 1 # número de intervalos, + 1 para incluir t máximo
 
 # cria uma matriz T (malha temporal de temperatura) sendo:
@@ -28,8 +28,6 @@ T = np.zeros(shape=(ni, nnX, nnY))
 #   enquanto que os lados = 100ºC, 0ºC, 0ºC, 0ºC (cima, direita, baixo, esquerda)
 
 T[0][0] = 100
-
-
 
 def metodo_Diferencas_Finitas(T):
     """
@@ -53,12 +51,11 @@ metodo_Diferencas_Finitas(T)
 plt.plot(T[0])
 plt.show()
 '''
-'''
+
 plt.imshow(T[-1])
 plt.colorbar()
 plt.show()
 
-'''
 
-print(T[3])
+print(T[-1])
 
