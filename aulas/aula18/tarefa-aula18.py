@@ -15,13 +15,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-alpha = 1/(100*100) #cm^2
+alpha = 1/(100*100) #m^2
 
 L = 0.5 # comprimento da barra em metros
 deltaX = 0.05 # espaçamento nodal em metro
 nn = int(L/deltaX) + 1 # número de nós, + 1 pois as duas pontas da barra são nó
 
-tTotal = 500 + 20*8 # tempo total de análise
+tTotal = 500 #+ 20*8 # tempo total de análise
 deltaT = 5 # intervalo de tempo entre cada análise
 ni = int(tTotal/deltaT) + 1 # número de intervalos, + 1 para incluir t = 500
 
@@ -30,7 +30,7 @@ ni = int(tTotal/deltaT) + 1 # número de intervalos, + 1 para incluir t = 500
 #       cada linha representa um ponto do nó
 #   ni (número de intervalos) = quantidade de colunas
 #       cada coluna representa um intervalo de tempo
-T = np.zeros((nn, ni))
+T = np.zeros(shape=(nn, ni))
 
 # Condição inicial da barra
 #   todos os pontos no interior da barra = 20ºC, enquanto q as pontas = 0ºC
