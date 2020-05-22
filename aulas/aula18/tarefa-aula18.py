@@ -15,7 +15,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-alpha = 1 #cm^2
+alpha = 1/(100*100) #cm^2
 
 L = 0.5 # comprimento da barra em metros
 deltaX = 0.05 # espaçamento nodal em metro
@@ -39,16 +39,16 @@ for e in range(1, nn-1):
 
 
 def metodo_Diferencas_Finitas(T):
-    '''
+    """
         Método das diferenças finitas - unidimensional
         Eq. nos slides da aula 18
-    '''
+    """
     # Utilizamos l e i para respeitar a equação dos slides
     for l in range(1, ni):
         for i in range(1, nn-1):
 
             # A única diferença é que calculamos para l ao invés de l+1, isso fará que l seja l-1
-            T[i][l] = T[i][l-1] + (alpha/5)*(T[i+1][l-1] - 2*T[i][l-1] + T[i-1][l-1])
+            T[i][l] = T[i][l-1] + (alpha*(deltaT/deltaX**2))*(T[i+1][l-1] - 2*T[i][l-1] + T[i-1][l-1])
 
 metodo_Diferencas_Finitas(T)
 
@@ -63,4 +63,4 @@ for l in range(ni):
     plt.plot(ideltaX, np.column_stack(T)[l])
 plt.show()
 
-print(np.column_stack(T)[132])
+print(np.column_stack(T)[-1])
