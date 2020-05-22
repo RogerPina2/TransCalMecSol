@@ -1,66 +1,64 @@
-# Discretização de diferenças finitas 
-    # determinar a distribuição de temperatura
-        # barra de alumínio
-            # L = 50 cm
-            # dimensões desprezíveis em relação ao eixo = unidimensional
-
-'''
-    Para a discretização do domínio use
-    uma malha uniforme com
-    espaçamento de 5 cm no
-    comprimento da barra e 5s em
-    relação ao tempo.
-'''
-
 import numpy as np
 import matplotlib.pyplot as plt
 
-alpha = 1 #cm^2
+alpha = 0.25 #m^2/s
 
-L = 0.5 # comprimento da barra em metros
-deltaX = 0.05 # espaçamento nodal em metro
-nn = int(L/deltaX) + 1 # número de nós, + 1 pois as duas pontas da barra são nó
+L = 0.5 # comprimento do lado da placa em metros
 
-tTotal = 500 + 20*8 # tempo total de análise
-deltaT = 5 # intervalo de tempo entre cada análise
-ni = int(tTotal/deltaT) + 1 # número de intervalos, + 1 para incluir t = 500
+deltaX = 0.1 # espaçamento nodal em metro em X
+nnX = int(L/deltaX) + 1 # número de nós na direção X, + 1 pois as duas pontas da barra são nó
 
-# cria uma matriz T (malha temporal) sendo:
-#   nn (número de nós) = quantidade de linhas
-#       cada linha representa um ponto do nó
-#   ni (número de intervalos) = quantidade de colunas
-#       cada coluna representa um intervalo de tempo
-T = np.zeros((nn, ni))
+deltaY = deltaX # espaçamento nodal em metro em Y
+nnY = int(L/deltaY) + 1 # número de nós na direção Y, + 1 pois as duas pontas da barra são nó 
 
-# Condição inicial da barra
-#   todos os pontos no interior da barra = 20ºC, enquanto q as pontas = 0ºC
-for e in range(1, nn-1):
-    T[e][0] = 20
+tTotal = 10 # tempo total de análise em segundos
+deltaT = 10e-2 # intervalo de tempo entre cada análise em segundos
+ni = int(tTotal/deltaT) + 1 # número de intervalos, + 1 para incluir t máximo
+
+# cria uma matriz T (malha temporal de temperatura) sendo:
+#   nnX (número de nós em X) = quantidade de linhas
+#   nnY (número de nós em Y) = quantidade de colunas
+#       cada valor da matriz representa um nó
+#   ni (número de intervalos) = quantidade de matrizes
+#       cada matriz representa um intervalo de tempo
+T = np.zeros(shape=(ni, nnX, nnY))
+
+# ============= Condição inicial da placa ============= 
+#   todos os pontos no interior da placa = 0ºC
+#   enquanto que os lados = 100ºC, 0ºC, 0ºC, 0ºC (cima, direita, baixo, esquerda)
+
+T[0][0] = 100
+
 
 
 def metodo_Diferencas_Finitas(T):
-    '''
-        Método das diferenças finitas - unidimensional
-        Eq. nos slides da aula 18
-    '''
+    """
+        Método das diferenças finitas - bidimensional
+        Eq. nos slides da aula 19
+    """
     # Utilizamos l e i para respeitar a equação dos slides
     for l in range(1, ni):
-        for i in range(1, nn-1):
+        for i in range(nnX):
+            for j in range(nnY):
 
-            # A única diferença é que calculamos para l ao invés de l+1, isso fará que l seja l-1
-            T[i][l] = T[i][l-1] + (alpha/5)*(T[i+1][l-1] - 2*T[i][l-1] + T[i-1][l-1])
+                if i == 0 or j == 0 or i == (nnX-1) or j == (nnY-1):
+                    T[l][i][j] = T[l-1][i][j]
+                else:
+                    T[l][i][j] = T[l-1][i][j] + (alpha*(deltaT/deltaX**2))*((T[l-1][i+1][j] - 2*T[l-1][i][j] + T[l-1][i-1][j]) + (T[l-1][i][j+1] - 2*T[l-1][i][j] + T[l-1][i][j-1]))
+
 
 metodo_Diferencas_Finitas(T)
 
-# O intervalo delta X é uma lista que representa o comprimento da barra divida em intervalos de deltaX
-ideltaX = np.linspace(0, L, 11, endpoint=True)
-
-# plot de todas análises de temperatura
-# a análise é feita a cada 5s
-# cada coluna da matriz T representa uma análise
-for l in range(ni):
-    # a função np.column_stack(MATRIZ)[IDX] transforma a coluna de valor IDX da MATRIZ em uma lista
-    plt.plot(ideltaX, np.column_stack(T)[l])
+'''
+plt.plot(T[0])
+plt.show()
+'''
+'''
+plt.imshow(T[-1])
+plt.colorbar()
 plt.show()
 
-print(np.column_stack(T)[132])
+'''
+
+print(T[3])
+
