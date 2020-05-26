@@ -39,11 +39,12 @@ def metodo_Diferencas_Finitas(T):
         for i in range(nnX):
             for j in range(nnY):
 
+                F0 = alpha*(deltaT/deltaX**2)
+
                 if i == 0 or j == 0 or i == (nnX-1) or j == (nnY-1):
                     T[l][i][j] = T[l-1][i][j]
                 else:
-                    T[l][i][j] = T[l-1][i][j] + (alpha*(deltaT/deltaX**2))*((T[l-1][i+1][j] - 2*T[l-1][i][j] + T[l-1][i-1][j]) + (T[l-1][i][j+1] - 2*T[l-1][i][j] + T[l-1][i][j-1]))
-
+                    T[l][i][j] = F0 * (T[l-1][i+1][j] + T[l-1][i-1][j] + T[l-1][i][j+1] + T[l-1][i][j-1]) + (1 - 4*F0)*T[l-1][i][j]
 
 metodo_Diferencas_Finitas(T)
 
