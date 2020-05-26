@@ -1,74 +1,49 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-alpha = 0.25 #m^2/s
+L = 0.4
 
-L = 0.5 # comprimento do lado da placa em metros
+dX = 0.1
+dY = dX
 
-deltaX = 0.1 # espaçamento nodal em metro em X
-nnX = int(L/deltaX) + 1 # número de nós na direção X, + 1 pois as duas pontas da barra são nó
+nX = int(L/dX) + 1
+nY = int(L/dY) + 1
 
-deltaY = deltaX # espaçamento nodal em metro em Y
-nnY = int(L/deltaY) + 1 # número de nós na direção Y, + 1 pois as duas pontas da barra são nó 
+t = 10
+dT = 1e-3
+nT = int(t/dT)
 
-tTotal = 10 # tempo total de análise em segundos
-deltaT = 1e-2 # intervalo de tempo entre cada análise em segundos
-ni = int(tTotal/deltaT) + 1 # número de intervalos, + 1 para incluir t máximo
+T = np.zeros(shape=(nT,nY,nX))
 
-# cria uma matriz T (malha temporal de temperatura) sendo:
-#   nnX (número de nós em X) = quantidade de linhas
-#   nnY (número de nós em Y) = quantidade de colunas
-#       cada valor da matriz representa um nó
-#   ni (número de intervalos) = quantidade de matrizes
-#       cada matriz representa um intervalo de tempo
-T = np.zeros(shape=(ni, nnX, nnY))
+T[0][0] = 150
+for e in range(nY):
+    T[0][e][-1] = 50
 
-# ============= Condição inicial da placa ============= 
-#   todos os pontos no interior da placa = 0ºC
-#   enquanto que os lados = 100ºC, 0ºC, 0ºC, 0ºC (cima, direita, baixo, esquerda)
+T[0][0][-1] = 0
+T[0][-1] = 0
 
-T[0][0] = 100
+k = 0.23
+c = 897
+p = 2.7 * 1e-6
 
-global final
-final = -1
-def metodo_Diferencas_Finitas(T):
-    """
-        Método das diferenças finitas - bidimensional
-        Eq. nos slides da aula 19
-    """
-    F0 = (alpha*(deltaT/deltaX**2))
-    convergencia = 0
+alpha = k/(c*p) * 1e-6
 
-    # Utilizamos l e i para respeitar a equação dos slides
-    for p in range(1, ni):
-        for i in range(nnX):
-            for j in range(nnY):
+#=====================================
 
-                if j == 0 or i == (nnX-1) or j == (nnY-1):
-                    T[p][i][j] = T[p-1][i][j]
+F0 = alpha*(dT/dX**2)
 
-                elif i == 0:
-                    termo_fora_da_placa = 0 #A gente precisa implementar a parte com derivada, só q é dificil, não queremos pensa pq somos preguiçosos :D
-                    T[p][i][j] = F0 * (T[p-1][i+1][j] + termo_fora_da_placa +  T[p-1][i][j+1] + T[p-1][i][j-1]) + (1 - 4*F0)*T[p-1][i][j] #derivada parcial = 0 
-                
-                else:
-                    T[p][i][j] = F0 * (T[p-1][i+1][j] + T[p-1][i-1][j] + T[p-1][i][j+1] + T[p-1][i][j-1]) + (1 - 4*F0)*T[p-1][i][j]
+for p in range(1,nT):
+    for j in range(nY):
+        for i in range(nX):
 
-                    if(abs((T[p][i][j]-T[p-1][i][j])/T[p][i][j]) > convergencia):
-                        convergencia = abs((T[p][i][j]-T[p-1][i][j])/T[p][i][j])
-        
-        if(convergencia < 1e-4):
-            final = p
-            break
+            if j == 0 or j == (nY-1) or i == (nX-1):
+                T[p][j][i] = T[p-1][j][i]
 
-metodo_Diferencas_Finitas(T)
+            elif i==0:
+                T[p][j][i] = F0 * (2*T[p-1][j][i+1]+ T[p-1][j+1][i] + T[p-1][j-1][i]) + (1 - 4*F0)*T[p-1][j][i]
 
+            else:
+                T[p][j][i] = F0 * (T[p-1][j][i+1] + T[p-1][j][i-1] + T[p-1][j+1][i] + T[p-1][j-1][i]) + (1 - 4*F0)*T[p-1][j][i]
 
-plt.imshow(T[-1])
-plt.colorbar()
-plt.show()
-
-
-print(T[final])
-print(final)
-
+for e in T[-1]:
+    print(e)
