@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+import time
 
 # Lados do retângulo
 Lx = 30
@@ -15,7 +16,7 @@ nX = int(Lx/dX) + 1
 nY = int(Ly/dY) + 1 
 
 # Tempo total e tempo de despejo
-Tt = 6
+Tt = 30
 Td = 3
 
 # Intervalo entre cada análise
@@ -68,10 +69,22 @@ for t in range(nT):
     C[t][0][:] = C[t][1][:]
     C[t][-1][:] = C[t][-2][:]
     C[t][:][0] = C[t][:][1]
+    #C[t][:][-1] = C[t][:][-2]
+
     for e in range(nY):
         C[t][e][-1] = C[t][e][-2]
 
-plt.imshow(C[final])
+plt.imshow(C[0])
+plt.gca().invert_yaxis()
+plt.colorbar()
+plt.show()
+
+plt.imshow(C[1])
+plt.gca().invert_yaxis()
+plt.colorbar()
+plt.show()
+
+plt.imshow(C[2])
 plt.gca().invert_yaxis()
 plt.colorbar()
 plt.show()
