@@ -1,3 +1,2 @@
 import math
-
-print(math.sin(60))
+print(math.sin((math.pi/5) * (15*0.5)))
